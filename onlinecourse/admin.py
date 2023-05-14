@@ -1,9 +1,15 @@
 from django.contrib import admin
 # <HINT> Import any new Models here
-from .models import Course, Lesson, Instructor, Learner
+from .models import Course, Lesson, Instructor, Learner, Question, Choice, Submission
 
 # <HINT> Register QuestionInline and ChoiceInline classes here
+class QuestionInline(admin.StackedInline):
+    model = Question
+    extra = 4
 
+class ChoiceInline(admin.StackedInline):
+    model = Choice
+    extra = 4
 
 class LessonInline(admin.StackedInline):
     model = Lesson
@@ -13,13 +19,21 @@ class LessonInline(admin.StackedInline):
 # Register your models here.
 class CourseAdmin(admin.ModelAdmin):
     inlines = [LessonInline]
-    list_display = ('name', 'pub_date')
+    list_display = ['name', 'pub_date']
     list_filter = ['pub_date']
     search_fields = ['name', 'description']
 
 
 class LessonAdmin(admin.ModelAdmin):
     list_display = ['title']
+    inlines = [QuestionInline]
+
+class QuestionAdmin(admin.ModelAdmin):
+    inlines = [ChoiceInline]
+    list_display= ['question', 'lesson']
+
+class ChoiceAdmin(admin.ModelAdmin):
+    list_display = ['content', 'is_correct']
 
 
 # <HINT> Register Question and Choice models here
@@ -28,3 +42,5 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Instructor)
 admin.site.register(Learner)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Choice, ChoiceAdmin)

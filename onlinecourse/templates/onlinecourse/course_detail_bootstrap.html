@@ -62,7 +62,35 @@
                 </div>
 
             -->
+            <button data-toggle="collapse" data-target="#exam"
+            class="btn btn-info" role="button" style="width:100%">
+           Start Exam</button>
 
+       <div id="exam" class="collapse">
+            {% if user.is_authenticated %}
+               <form id="questionform" action="{% url 'onlinecourse:submit' course.id %}" method="post">
+                    {% for question in course.question_set.all %}
+                   <div class="card mt-1">
+                        {% csrf_token %}
+                       <b>{{question.question}}</b><br/>
+                       <div class="form-group">
+                           {% for choice in question.choice_set.all %}
+                               <div class="form-check">
+                                   <label class="form-check-label">
+                                       <input type="checkbox" name="choice_{{choice.id}}"
+                                           class="form-check-input" id="{{choice.id}}"
+                                           value="{{choice.id}}">{{ choice.choice_content }}
+                                   </label>
+                               </div>
+                           {% endfor %}
+                       </div>
+                   </div>                        
+                   {% endfor %}
+                    <input class="btn btn-success btn-block" type="submit" value="Submit">
+               </form>       
+            {% endif %}
+       </div>
+       
             <!-- <HINT> If user is authenticated, show course exam with a list of question -->
 
             <!-- <HINT> Each example will have many questions -->
@@ -70,10 +98,10 @@
             <!-- <HINT> Each question will have many choices -->
 
 
-            <!-- <HINT> Create a form to collect the selected choices for all questions -->
-            <!-- <HINT> For each question choice, you may create a checkbox input like
-            <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>
-            -->
+            <!-- <HINT> Create a form to collect the selected choices for all questions 
+             <HINT> For each question choice, you may create a checkbox input like
+            <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>-->
+            
 
             <!-- A choice submission form example
             <form id="questionform" action="point to a submit view" method="post">
